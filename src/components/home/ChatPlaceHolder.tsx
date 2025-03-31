@@ -18,7 +18,7 @@ const ChatPlaceHolder = () => {
           love ?)
         </p>
         <p className="w-full text-center text-gray-primary text-sm text-muted-foreground">
-          2. Start the message with &quot;pollination&quot; to generate an AI image
+          2. Start the message with &quot;@pollination&quot; to generate an AI image
           🖼️(ex: @pollination a sunset over a forest).
         </p>
       </div>
