@@ -5,46 +5,63 @@ import MessageInput from "./MessageInput";
 import MessageContainer from "./MessageContainer";
 import ChatPlaceHolder from "./ChatPlaceHolder";
 import GroupMembersDialog from "./GroupMemberDialog";
+import { useConversationStore } from "@/store/chatStore";
+
 
 const RightPanel = () => {
-	const selectedConversation = true;
-	if (!selectedConversation) return <ChatPlaceHolder />;
+  const { selectedConversation, setSelectedConversation } =
+    useConversationStore();
+  if (!selectedConversation) return <ChatPlaceHolder />;
 
-	const conversationName = "John Doe";
-  const isGroup = true; // This should be replaced with actual logic to determine if the conversation is a group chat
+  const conversationName =
+    selectedConversation.groupName || selectedConversation.name;
+  const conversationImage =
+    selectedConversation.groupImage || selectedConversation.image;
+  const isGroup = selectedConversation.isGroup;
 
-	return (
-		<div className='w-3/4 flex flex-col'>
-			<div className='w-full sticky top-0 z-50'>
-				{/* Header */}
-				<div className='flex justify-between bg-gray-primary p-3'>
-					<div className='flex gap-3 items-center'>
-						<Avatar>
-							<AvatarImage src={"/placeholder.png"} className='object-cover' />
-							<AvatarFallback>
-								<div className='animate-pulse bg-gray-tertiary w-full h-full rounded-full' />
-							</AvatarFallback>
-						</Avatar>
-						<div className='flex flex-col'>
-							<p>{conversationName}</p>
-							{isGroup && <GroupMembersDialog />}
-						</div>
-					</div>
+  return (
+    <div className="w-3/4 flex flex-col">
+      <div className="w-full sticky top-0 z-50">
+        {/* Header */}
+        <div className="flex justify-between bg-gray-primary p-3">
+          <div className="flex gap-3 items-center">
+            <Avatar>
+              <AvatarImage
+                src={conversationImage || "/placeholder.png"}
+                className="object-cover"
+              />
+              <AvatarFallback>
+                <div className="animate-pulse bg-gray-tertiary w-full h-full rounded-full" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <p>{conversationName}</p>
+              {isGroup && (
+                <GroupMembersDialog
+                  selectedConversation={selectedConversation}
+                />
+              )}
+            </div>
+          </div>
 
-					<div className='flex items-center gap-7 mr-5'>
-						<a href='/video-call' target='_blank'>
-							<Video size={23} />
-						</a>
-						<X size={16} className='cursor-pointer' />
-					</div>
-				</div>
-			</div>
-			{/* CHAT MESSAGES */}
-			<MessageContainer />
+          <div className="flex items-center gap-7 mr-5">
+            <a href="/video-call" target="_blank">
+              <Video size={23} />
+            </a>
+            <X
+              size={16}
+              className="cursor-pointer"
+              onClick={() => setSelectedConversation(null)}
+            />
+          </div>
+        </div>
+      </div>
+      {/* CHAT MESSAGES */}
+      <MessageContainer />
 
-			{/* INPUT */}
-			<MessageInput />
-		</div>
-	);
+      {/* INPUT */}
+      <MessageInput />
+    </div>
+  );
 };
 export default RightPanel;

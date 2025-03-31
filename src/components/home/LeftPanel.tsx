@@ -8,23 +8,49 @@ import {
 import { Input } from "../ui/input";
 import ThemeSwitch from "./ThemeSwitch";
 import Conversation from "./Conversation";
-import { conversations } from "@/dummy-data/db";
+import { UserButton } from "@clerk/nextjs";
+import UserListDialog from "./UserListDialog";
+import { useConvexAuth, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { useConversationStore } from "@/store/chatStore";
+import { useEffect } from "react";
 
 const LeftPanel = () => {
+  const { isAuthenticated, isLoading } = useConvexAuth();
 
+  const { setCurrentUser, currentUser } = useConversationStore();
+  const conversations = useQuery(
+    api.conversations.getMyConversations,
+    isAuthenticated ? undefined : "skip"
+  );
+  const me = useQuery(api.users.getMe, isAuthenticated ? undefined : "skip");
 
+  useEffect(() => {
+    if (me) {
+      setCurrentUser(me);
+    }
+  }, [me, setCurrentUser]);
+
+  if (isLoading) {
+    return (
+      <div className="flex w-52 flex-col gap-4 p-5">
+        <div className="skeleton h-32 w-full"></div>
+        <div className="skeleton h-4 w-28"></div>
+        <div className="skeleton h-4 w-full"></div>
+        <div className="skeleton h-4 w-full"></div>
+      </div>
+    );
+  }
   return (
     <div className="w-1/4 border-gray-600 border-r">
       <div className="sticky top-0 bg-left-panel z-10">
         {/* Header */}
         <div className="flex justify-between bg-gray-primary p-3 items-center">
-          <User size={24} />
+          <UserButton />
 
           <div className="flex items-center gap-3">
-            <MessageSquareDiff size={20} />{" "}
-            {/* TODO: This line will be replaced with <UserListDialog /> */}
+            {isAuthenticated && <UserListDialog />}
             <ThemeSwitch />
-            <LogOut size={20} className="cursor-pointer" />
           </div>
         </div>
         <div className="p-3 flex items-center">
@@ -48,7 +74,11 @@ const LeftPanel = () => {
       <div className="my-3 flex flex-col gap-0 max-h-[80%] overflow-auto">
         {/* Conversations will go here*/}
         {conversations?.map((conversation) => (
-          <Conversation key={conversation._id} conversation={conversation} />
+          <Conversation
+            key={conversation._id}
+            conversation={conversation}
+            me={currentUser}
+          />
         ))}
 
         {conversations?.length === 0 && (
