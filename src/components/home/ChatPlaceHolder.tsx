@@ -14,11 +14,11 @@ const ChatPlaceHolder = () => {
           Make calls, share your screen and chat with AI bot
         </p>
         <p className="w-1/2 text-center text-gray-primary text-sm text-muted-foreground">
-          1. Start the message with "@gpt" to chat with AI 🤖(ex: @gpt what is
+          1. Start the message with &apos@gpt&apos to chat with AI 🤖(ex: @gpt what is
           love ?)
         </p>
         <p className="w-full text-center text-gray-primary text-sm text-muted-foreground">
-          2. Start the message with '@pollination' to generate an AI image
+          2. Start the message with &apos@pollination&apos to generate an AI image
           🖼️(ex: @pollination a sunset over a forest).
         </p>
       </div>
